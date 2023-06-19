@@ -1,6 +1,6 @@
-# astro
+# astro_core
 
-*A space themed state management package for Flutter.*
+*The core API for astro principles and peripherals.*
 
 ## Features
 

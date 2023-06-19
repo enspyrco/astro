@@ -1,4 +1,4 @@
-library astro;
+library astro_core;
 
 export 'src/core/mission_control.dart';
 export 'src/core/system_checks.dart';

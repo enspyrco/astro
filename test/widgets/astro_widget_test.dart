@@ -1,4 +1,4 @@
-import 'package:astro/astro.dart';
+import 'package:astro_core/astro_core.dart';
 import 'package:astro_locator/astro_locator.dart';
 import 'package:astro_types/core_types.dart';
 import 'package:astro_types/error_handling_types.dart';
