@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:astro/src/core/system_checks.dart';
 import 'package:astro_error_handling/astro_error_handling.dart';
 import 'package:astro_types/core_types.dart';
 import 'package:astro_types/error_handling_types.dart';
 import 'package:astro_types/state_types.dart';
+
+import '../../astro_core.dart';
 
 typedef WrappedMissionControlCtr = MissionControl<S>
     Function<S extends AstroState>(MissionControl<S>, AwayMission<S>);

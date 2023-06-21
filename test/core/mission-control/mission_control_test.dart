@@ -1,6 +1,6 @@
-import 'package:astro/src/core/mission_control.dart';
+import 'package:astro_core/astro_core.dart';
 import 'package:astro_error_handling/astro_error_handling.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 import '../../test-doubles/example_app_state.dart';
 import '../../test-doubles/example_exception.dart';
