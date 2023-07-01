@@ -1,6 +1,6 @@
-# astro_core
+# core_of_perception
 
-*The core API for astro principles and peripherals.*
+*The core API for perception principles and peripherals.*
 
 ## Features
 

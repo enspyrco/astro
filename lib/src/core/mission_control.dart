@@ -5,7 +5,7 @@ import 'package:astro_types/core_types.dart';
 import 'package:astro_types/error_handling_types.dart';
 import 'package:astro_types/state_types.dart';
 
-import '../../astro_core.dart';
+import '../../core_of_perception.dart';
 
 typedef WrappedMissionControlCtr = MissionControl<S>
     Function<S extends AstroState>(MissionControl<S>, AwayMission<S>);

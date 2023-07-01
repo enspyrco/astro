@@ -1,4 +1,4 @@
-import 'package:astro_core/astro_core.dart';
+import 'package:core_of_perception/core_of_perception.dart';
 import 'package:astro_error_handling/astro_error_handling.dart';
 import 'package:flutter_test/flutter_test.dart';
 

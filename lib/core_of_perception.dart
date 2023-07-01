@@ -1,4 +1,4 @@
-library astro_core;
+library core_of_perception;
 
 export 'src/core/mission_control.dart';
 export 'src/core/system_checks.dart';
