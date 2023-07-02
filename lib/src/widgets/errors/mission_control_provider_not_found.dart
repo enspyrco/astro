@@ -1,4 +1,4 @@
-import 'package:astro_types/state_types.dart';
+import 'package:types_for_perception/state_types.dart';
 
 class MissionControlProviderNotFound<S extends AstroState> extends Error {
   MissionControlProviderNotFound();

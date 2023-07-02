@@ -1,17 +1,17 @@
 dependency_overrides:
-  astro_types:
-    git: https://github.com/enspyrco/astro_types
-  astro_locator:
-    git: https://github.com/enspyrco/astro_locator
-  astro_error_handling:
-    git: https://github.com/enspyrco/astro_error_handling
+  types_for_perception:
+    git: https://github.com/enspyrco/types_for_perception
+  locator_for_perception:
+    git: https://github.com/enspyrco/locator_for_perception
+  error_handling_for_perception:
+    git: https://github.com/enspyrco/error_handling_for_perception
   enspyr_lints:
     git: https://github.com/enspyrco/enspyr_lints
 
 # dependency_overrides:
-#   astro_types:
-#     path: ../../../flutter/utils/astro_types
-#   astro_locator:
-#     path: ../../../dart/utils/astro_locator
-#   astro_error_handling:
-#     path: ../astro_error_handling
+#   types_for_perception:
+#     path: ../../../flutter/utils/types_for_perception
+#   locator_for_perception:
+#     path: ../../../dart/utils/locator_for_perception
+#   error_handling_for_perception:
+#     path: ../error_handling_for_perception

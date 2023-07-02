@@ -1,7 +1,7 @@
 import 'package:core_of_perception/core_of_perception.dart';
-import 'package:astro_locator/astro_locator.dart';
-import 'package:astro_types/core_types.dart';
-import 'package:astro_types/error_handling_types.dart';
+import 'package:locator_for_perception/locator_for_perception.dart';
+import 'package:types_for_perception/core_types.dart';
+import 'package:types_for_perception/error_handling_types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

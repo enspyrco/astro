@@ -1,4 +1,4 @@
-import 'package:astro_error_handling/astro_error_handling.dart';
+import 'package:error_handling_for_perception/error_handling_for_perception.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../test-doubles/example_app_state.dart';

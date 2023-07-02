@@ -1,6 +1,6 @@
-import 'package:astro_error_handling/astro_error_handling.dart';
-import 'package:astro_types/error_handling_types.dart';
-import 'package:astro_types/state_types.dart';
+import 'package:error_handling_for_perception/error_handling_for_perception.dart';
+import 'package:types_for_perception/error_handling_types.dart';
+import 'package:types_for_perception/state_types.dart';
 
 class IdentityEquivalenceAppState implements AstroState, AppStateErrorHandling {
   IdentityEquivalenceAppState({required this.error});
