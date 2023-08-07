@@ -1,6 +1,6 @@
-import 'package:types_for_perception/state_types.dart';
+import 'package:types_for_perception/beliefs.dart';
 
-class MissionControlProviderNotFound<S extends AstroState> extends Error {
+class MissionControlProviderNotFound<S extends CoreBeliefs> extends Error {
   MissionControlProviderNotFound();
 
   @override

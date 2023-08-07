@@ -1,13 +1,12 @@
 import 'dart:async';
 
 import 'package:locator_for_perception/locator_for_perception.dart';
-import 'package:types_for_perception/core_types.dart';
-import 'package:types_for_perception/state_types.dart';
 import 'package:flutter/widgets.dart';
+import 'package:types_for_perception/beliefs.dart';
 
 import 'exceptions/transform_failure_exception.dart';
 
-class OnStateChangeBuilder<S extends AstroState, VM> extends StatelessWidget {
+class OnStateChangeBuilder<S extends CoreBeliefs, VM> extends StatelessWidget {
   final VM Function(S state) transformer;
   final Widget Function(BuildContext context, VM vm) builder;
   final void Function(MissionControl<S> missionControl)? onInit;
@@ -33,7 +32,7 @@ class OnStateChangeBuilder<S extends AstroState, VM> extends StatelessWidget {
   }
 }
 
-class _OnStateChangeBuilder<S extends AstroState, VM> extends StatefulWidget {
+class _OnStateChangeBuilder<S extends CoreBeliefs, VM> extends StatefulWidget {
   final MissionControl<S> missionControl;
   final Widget Function(BuildContext, VM) builder;
   final VM Function(S) transformer;
@@ -55,7 +54,7 @@ class _OnStateChangeBuilder<S extends AstroState, VM> extends StatefulWidget {
   }
 }
 
-class _OnStateChangeBuilderState<S extends AstroState, VM>
+class _OnStateChangeBuilderState<S extends CoreBeliefs, VM>
     extends State<_OnStateChangeBuilder<S, VM>> {
   late Stream<VM> _stream;
   VM? _previous;

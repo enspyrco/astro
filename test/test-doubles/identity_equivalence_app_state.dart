@@ -1,8 +1,9 @@
 import 'package:error_handling_for_perception/error_handling_for_perception.dart';
+import 'package:types_for_perception/beliefs.dart';
 import 'package:types_for_perception/error_handling_types.dart';
-import 'package:types_for_perception/state_types.dart';
 
-class IdentityEquivalenceAppState implements AstroState, AppStateErrorHandling {
+class IdentityEquivalenceAppState
+    implements CoreBeliefs, AppStateErrorHandling {
   IdentityEquivalenceAppState({required this.error});
 
   static IdentityEquivalenceAppState get initial =>

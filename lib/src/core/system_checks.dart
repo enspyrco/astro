@@ -1,4 +1,4 @@
-import 'package:types_for_perception/core_types.dart';
+import 'package:types_for_perception/beliefs.dart';
 
 class DefaultSystemChecks implements SystemChecks {
   DefaultSystemChecks();

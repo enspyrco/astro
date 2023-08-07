@@ -1,14 +1,13 @@
 import 'dart:async';
 
 import 'package:error_handling_for_perception/error_handling_for_perception.dart';
-import 'package:types_for_perception/core_types.dart';
+import 'package:types_for_perception/beliefs.dart';
 import 'package:types_for_perception/error_handling_types.dart';
-import 'package:types_for_perception/state_types.dart';
 
 import '../../core_of_perception.dart';
 
 typedef WrappedMissionControlCtr = MissionControl<S>
-    Function<S extends AstroState>(MissionControl<S>, AwayMission<S>);
+    Function<S extends CoreBeliefs>(MissionControl<S>, AwayMission<S>);
 
 /// Pass in [systemChecks] to run logic on every [Mission], before or after
 /// [AwayMission.flightPlan] and/or [LandingMission.landingInstructions] are called.
@@ -22,7 +21,8 @@ typedef WrappedMissionControlCtr = MissionControl<S>
 /// [LandingMission.landingInstructions] or [AwayMission.flightPlan]. If no
 /// object is passed, the Throwable is just rethrown, keeping the same stack
 /// trace which is very useful in debugging.
-class DefaultMissionControl<S extends AstroState> implements MissionControl<S> {
+class DefaultMissionControl<S extends CoreBeliefs>
+    implements MissionControl<S> {
   DefaultMissionControl({
     required S state,
     ErrorHandlers<S>? errorHandlers,

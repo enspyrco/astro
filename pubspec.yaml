@@ -17,6 +17,8 @@ dependencies:
   locator_for_perception: ^0.0.0-a1
   types_for_perception: ^0.0.0-a1
 
+  json_utils: ^0.0.0-a1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

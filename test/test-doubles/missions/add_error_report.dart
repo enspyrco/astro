@@ -1,8 +1,7 @@
 import 'package:error_handling_for_perception/error_handling_for_perception.dart';
-import 'package:types_for_perception/core_types.dart';
-import 'package:types_for_perception/state_types.dart';
+import 'package:types_for_perception/beliefs.dart';
 
-class AddErrorReport<S extends AstroState> extends LandingMission<S> {
+class AddErrorReport<S extends CoreBeliefs> extends LandingMission<S> {
   @override
   S landingInstructions(S state) {
     var newState = (state as dynamic).copyWith(
