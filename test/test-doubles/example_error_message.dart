@@ -1,5 +1,5 @@
 import 'package:json_utils/json_utils.dart';
-import 'package:types_for_perception/beliefs.dart';
+import 'package:abstractions/beliefs.dart';
 
 /// Class for carrying basic error information for display to the user.
 class ExampleErrorMessage implements CoreBeliefs {

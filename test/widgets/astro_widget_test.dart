@@ -1,28 +1,28 @@
-import 'package:core_of_perception/core_of_perception.dart';
+import 'package:percepts/percepts.dart';
 import 'package:locator_for_perception/locator_for_perception.dart';
-import 'package:types_for_perception/beliefs.dart';
-import 'package:types_for_perception/error_handling_types.dart';
+import 'package:abstractions/beliefs.dart';
+import 'package:abstractions/error_correction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../test-doubles/example_app_state.dart';
-import '../test-doubles/identity_equivalence_app_state.dart';
-import '../test-doubles/missions/add_error_report.dart';
-import '../test-doubles/missions/new_object_same_state.dart';
+import '../test-doubles/example_beliefs.dart';
+import '../test-doubles/identity_equivalence_beliefs.dart';
+import '../test-doubles/cognition/add_error_report.dart';
+import '../test-doubles/cognition/new_object_same_state.dart';
 
 void main() {
   testWidgets('OnStateChangeBuilder only builds when state changes',
       (tester) async {
     // Setup objects under test & test doubles
-    var appState = ExampleAppState.initial;
-    var missionControl = DefaultMissionControl(state: appState);
+    var appState = ExampleBeliefs.initial;
+    var beliefSystem = DefaultBeliefSystem(state: appState);
 
-    Locator.add<MissionControl<ExampleAppState>>(missionControl);
+    Locator.add<BeliefSystem<ExampleBeliefs>>(beliefSystem);
 
     int i = 0;
     final widget = MaterialApp(
-        home: OnStateChangeBuilder<ExampleAppState, List<ErrorReport>>(
-            transformer: (state) => state.error.reports,
+        home: StreamOfConsciousness<ExampleBeliefs, List<ErrorReport>>(
+            infer: (state) => state.error.reports,
             builder: (context, vm) {
               return Text('builds: ${i++}, reports: ${vm.length}');
             }));
@@ -31,17 +31,17 @@ void main() {
 
     expect(find.text('builds: 0, reports: 0'), findsOneWidget);
 
-    missionControl.land(AddErrorReport<ExampleAppState>());
+    beliefSystem.conclude(AddErrorReport<ExampleBeliefs>());
     await tester.pump();
 
     expect(find.text('builds: 1, reports: 1'), findsOneWidget);
 
-    missionControl.land(NewObjectSameState<ExampleAppState>());
+    beliefSystem.conclude(NewObjectSameState<ExampleBeliefs>());
     await tester.pump();
 
     expect(find.text('builds: 1, reports: 1'), findsOneWidget);
 
-    missionControl.land(AddErrorReport<ExampleAppState>());
+    beliefSystem.conclude(AddErrorReport<ExampleBeliefs>());
     // notes on why we add a duration are below
     await tester.pump(const Duration(microseconds: 1));
     expect(find.text('builds: 2, reports: 2'), findsOneWidget);
@@ -51,16 +51,16 @@ void main() {
       'OnStateChangeBuilder only builds when state changes (with identity equivalence)',
       (tester) async {
     // Setup objects under test & test doubles
-    var appState = IdentityEquivalenceAppState.initial;
-    var missionControl = DefaultMissionControl(state: appState);
+    var appState = IdentityEquivalenceBeliefs.initial;
+    var beliefSystem = DefaultBeliefSystem(state: appState);
 
-    Locator.add<MissionControl<IdentityEquivalenceAppState>>(missionControl);
+    Locator.add<BeliefSystem<IdentityEquivalenceBeliefs>>(beliefSystem);
 
     int i = 0;
     final widget = MaterialApp(
-        home: OnStateChangeBuilder<IdentityEquivalenceAppState,
+        home: StreamOfConsciousness<IdentityEquivalenceBeliefs,
                 List<ErrorReport>>(
-            transformer: (state) => state.error.reports,
+            infer: (state) => state.error.reports,
             builder: (context, vm) {
               return Text('builds: ${i++}, reports: ${vm.length}');
             }));
@@ -69,17 +69,17 @@ void main() {
 
     expect(find.text('builds: 0, reports: 0'), findsOneWidget);
 
-    missionControl.land(AddErrorReport<IdentityEquivalenceAppState>());
+    beliefSystem.conclude(AddErrorReport<IdentityEquivalenceBeliefs>());
     await tester.pump();
 
     expect(find.text('builds: 1, reports: 1'), findsOneWidget);
 
-    missionControl.land(NewObjectSameState<IdentityEquivalenceAppState>());
+    beliefSystem.conclude(NewObjectSameState<IdentityEquivalenceBeliefs>());
     await tester.pump();
 
     expect(find.text('builds: 1, reports: 1'), findsOneWidget);
 
-    missionControl.land(AddErrorReport<IdentityEquivalenceAppState>());
+    beliefSystem.conclude(AddErrorReport<IdentityEquivalenceBeliefs>());
     // notes on why we add a duration are below
     await tester.pump(const Duration(microseconds: 1));
     expect(find.text('builds: 2, reports: 2'), findsOneWidget);

@@ -1,9 +1,9 @@
-import 'package:error_handling_for_perception/error_handling_for_perception.dart';
-import 'package:types_for_perception/beliefs.dart';
+import 'package:error_correction_in_perception/error_correction_in_perception.dart';
+import 'package:abstractions/beliefs.dart';
 
-class AddErrorReport<S extends CoreBeliefs> extends LandingMission<S> {
+class AddErrorReport<S extends CoreBeliefs> extends Conclusion<S> {
   @override
-  S landingInstructions(S state) {
+  S update(S state) {
     var newState = (state as dynamic).copyWith(
         error: (state as dynamic).error.copyWith(reports: [
       const DefaultErrorReport(message: 'message'),

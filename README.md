@@ -1,4 +1,4 @@
-# core_of_perception
+# percepts
 
 *The core API for perception principles and peripherals.*
 
@@ -9,7 +9,7 @@ Create Missions:
 - A LandingMission to update the AppState via synchrnous pure functions
 - An AwayMission to perform side effects asynchronously
 
-Launch AwayMissions and LandingMissions with MissionControl.
+Launch AwayMissions and LandingMissions with BeliefSystem.
 
 ## Getting started
 

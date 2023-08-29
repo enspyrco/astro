@@ -1,16 +1,16 @@
 import 'dart:async';
 
-import 'package:error_handling_for_perception/error_handling_for_perception.dart';
-import 'package:types_for_perception/beliefs.dart';
-import 'package:types_for_perception/error_handling_types.dart';
+import 'package:error_correction_in_perception/error_correction_in_perception.dart';
+import 'package:abstractions/beliefs.dart';
+import 'package:abstractions/error_correction.dart';
 
-import '../../core_of_perception.dart';
+import '../../percepts.dart';
 
-typedef WrappedMissionControlCtr = MissionControl<S>
-    Function<S extends CoreBeliefs>(MissionControl<S>, AwayMission<S>);
+typedef BeliefSystemFactory = BeliefSystem<S> Function<S extends CoreBeliefs>(
+    BeliefSystem<S>, Consideration<S>);
 
-/// Pass in [systemChecks] to run logic on every [Mission], before or after
-/// [AwayMission.flightPlan] and/or [LandingMission.landingInstructions] are called.
+/// Pass in [systemChecks] to run logic on every [Cognition], before or after
+/// [Consideration.process] and/or [Conclusion.update] are called.
 ///
 /// Make sure [onStateChangeController] is broadcast type as UI components will
 /// listen for a time at random intervals and only want the state changes while
@@ -18,36 +18,35 @@ typedef WrappedMissionControlCtr = MissionControl<S>
 ///
 /// The [errorHandlers] parameter takes an object of type [ErrorHandlers] which
 /// will be act on anything that gets thrown while executing
-/// [LandingMission.landingInstructions] or [AwayMission.flightPlan]. If no
+/// [Conclusion.update] or [Consideration.process]. If no
 /// object is passed, the Throwable is just rethrown, keeping the same stack
 /// trace which is very useful in debugging.
-class DefaultMissionControl<S extends CoreBeliefs>
-    implements MissionControl<S> {
-  DefaultMissionControl({
+class DefaultBeliefSystem<S extends CoreBeliefs> implements BeliefSystem<S> {
+  DefaultBeliefSystem({
     required S state,
     ErrorHandlers<S>? errorHandlers,
     StreamController<S>? onStateChangeController,
-    SystemChecks? systemChecks,
-    WrappedMissionControlCtr? missionControlCtr,
+    Habits? systemChecks,
+    BeliefSystemFactory? beliefSystemFactory,
   })  : _state = state,
         _errorHandlers = errorHandlers,
-        _systemChecks = systemChecks ?? DefaultSystemChecks(),
-        _missionControlCtr = missionControlCtr;
+        _systemChecks = systemChecks ?? DefaultHabits(),
+        _beliefSystemFactory = beliefSystemFactory;
   S _state;
   final ErrorHandlers? _errorHandlers;
 
-  /// This member is a constructor for creating special MissionControl objects,
+  /// This member is a constructor for creating special BeliefSystem objects,
   /// allowing for different behaviour under different circumstances - eg.
   /// when the Inspector is being used, extra information (such as the parent
-  /// mission) can be added by the special MissionControl
-  final WrappedMissionControlCtr? _missionControlCtr;
+  /// mission) can be added by the special BeliefSystem
+  final BeliefSystemFactory? _beliefSystemFactory;
 
   final StreamController<S> _onStateChangeController =
       StreamController<S>.broadcast();
 
-  /// [SystemCheck]s are called on every mission, before [AwayMission.flightPlan]
-  /// is called and after [LandingMission.landingInstructions] is called.
-  final SystemChecks _systemChecks;
+  /// [Habit]s are called on every mission, before [Consideration.process]
+  /// is called and after [Conclusion.update] is called.
+  final Habits _systemChecks;
 
   /// Returns the current state tree of the application.
   @override
@@ -58,55 +57,55 @@ class DefaultMissionControl<S extends CoreBeliefs>
   /// cases.
   Stream<S> get stateChanges => _onStateChangeController.stream;
 
-  /// Landing a [LandingMission] is the only way to upate the state held in
-  /// MissionControl, so any data, whether from UI events, network callbacks, or other
+  /// Landing a [Conclusion] is the only way to upate the state held in
+  /// BeliefSystem, so any data, whether from UI events, network callbacks, or other
   /// sources such as WebSockets needs to eventually be landed (ie. call land on
-  /// [LandingMission] that described the desired state change).
+  /// [Conclusion] that described the desired state change).
   @override
-  void land(LandingMission<S> mission) {
-    for (final systemCheck in _systemChecks.preLand) {
+  void conclude(Conclusion<S> mission) {
+    for (final systemCheck in _systemChecks.preConclusion) {
       systemCheck(this, mission);
     }
 
     try {
-      _state = mission.landingInstructions(_state);
+      _state = mission.update(_state);
     } catch (thrown, trace) {
       if (_errorHandlers == null) rethrow;
       _errorHandlers!.handleLandingError(
         thrown: thrown,
         trace: trace,
-        reportSettings: (thrown is AstroException)
+        reportSettings: (thrown is PerceptionException)
             ? thrown.reportSettings
             : ErrorReportSettings.fullReport,
         mission: mission,
-        missionControl: this,
+        beliefSystem: this,
       );
     }
 
     // emit the new state for any listeners (eg. StateStreamBuilder widgets)
     _onStateChangeController.add(_state);
 
-    for (final systemCheck in _systemChecks.postLand) {
+    for (final systemCheck in _systemChecks.postConclusion) {
       systemCheck(this, mission);
     }
   }
 
   /// Creation or retrieval of data that is asynchronous must be performed via
-  /// an [AwayMission]. If the desired end result is changing the app state,
-  /// the [AwayMission] should land a [LandingMission] when it is complete.
+  /// an [Consideration]. If the desired end result is changing the app state,
+  /// the [Consideration] should land a [Conclusion] when it is complete.
   @override
-  Future<void> launch(AwayMission<S> mission) async {
-    for (final systemCheck in _systemChecks.preLaunch) {
+  Future<void> consider(Consideration<S> mission) async {
+    for (final systemCheck in _systemChecks.preConsideration) {
       systemCheck(this, mission);
     }
 
     try {
-      if (_missionControlCtr != null) {
-        await mission.flightPlan(_missionControlCtr!(this, mission));
+      if (_beliefSystemFactory != null) {
+        await mission.process(_beliefSystemFactory!(this, mission));
       } else {
-        await mission.flightPlan(this);
+        await mission.process(this);
       }
-      for (final systemCheck in _systemChecks.postLaunch) {
+      for (final systemCheck in _systemChecks.postConsideration) {
         systemCheck(this, mission);
       }
     } catch (thrown, trace) {
@@ -114,11 +113,11 @@ class DefaultMissionControl<S extends CoreBeliefs>
       _errorHandlers!.handleLaunchError(
         thrown: thrown,
         trace: trace,
-        reportSettings: (thrown is AstroException)
+        reportSettings: (thrown is PerceptionException)
             ? thrown.reportSettings
             : ErrorReportSettings.fullReport,
         mission: mission,
-        missionControl: this,
+        beliefSystem: this,
       );
 
       // emit the new state for any listeners (eg. StateStreamBuilder widgets)
@@ -127,5 +126,5 @@ class DefaultMissionControl<S extends CoreBeliefs>
   }
 
   @override
-  Stream<S> get onStateChange => _onStateChangeController.stream;
+  Stream<S> get onBeliefUpdate => _onStateChangeController.stream;
 }

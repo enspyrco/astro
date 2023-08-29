@@ -12,9 +12,9 @@
 //       (tester) async {
 //     // Setup objects under test & test doubles
 //     var appState = ExampleAppState.initial;
-//     var missionControl = RecordingMissionControl(state: appState);
+//     var beliefSystem = RecordingBeliefSystem(state: appState);
 
-//     Locator.add<MissionControl<ExampleAppState>>(missionControl);
+//     Locator.add<BeliefSystem<ExampleAppState>>(beliefSystem);
 
 //     int i = 0;
 //     final widget = MaterialApp(
@@ -31,17 +31,17 @@
 
 //     expect(find.text('builds: 0, SignedInState.checking'), findsOneWidget);
 
-//     missionControl.land(const PushRoute<ExampleAppState>(SignInPageState()));
+//     beliefSystem.land(const PushRoute<ExampleAppState>(SignInPageState()));
 //     await tester.pump();
 
 //     expect(find.text('builds: 1, SignedInState.checking'), findsOneWidget);
 
-//     missionControl.land(const PushRoute<ExampleAppState>(HomePageState()));
+//     beliefSystem.land(const PushRoute<ExampleAppState>(HomePageState()));
 //     await tester.pump();
 
 //     expect(find.text('builds: 1, reports: 1'), findsOneWidget);
 
-//     missionControl.land(const PushRoute<ExampleAppState>(HomePageState()));
+//     beliefSystem.land(const PushRoute<ExampleAppState>(HomePageState()));
 //     // notes on why we add a duration are below
 //     await tester.pump(const Duration(microseconds: 1));
 //     expect(find.text('builds: 2, reports: 2'), findsOneWidget);
