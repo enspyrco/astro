@@ -7,7 +7,7 @@ import 'package:abstractions/beliefs.dart';
 import 'exceptions/transform_failure_exception.dart';
 
 class StreamOfConsciousness<S extends CoreBeliefs, VM> extends StatelessWidget {
-  final VM Function(S belief) infer;
+  final VM Function(S beliefs) infer;
   final Widget Function(BuildContext context, VM vm) builder;
   final void Function(BeliefSystem<S> beliefSystem)? onInit;
   final void Function(BeliefSystem<S> beliefSystem)? onDispose;

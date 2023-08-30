@@ -4,7 +4,7 @@ import '../example_exception.dart';
 
 class ExampleConsideration<S extends CoreBeliefs> extends Consideration<S> {
   @override
-  Future<void> process(BeliefSystem<S> beliefSystem) async {
+  Future<void> consider(BeliefSystem<S> beliefSystem) async {
     throw ExampleException();
   }
 

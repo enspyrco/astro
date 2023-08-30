@@ -3,7 +3,7 @@ import 'package:abstractions/beliefs.dart';
 
 class AddErrorReport<S extends CoreBeliefs> extends Conclusion<S> {
   @override
-  S update(S state) {
+  S conclude(S state) {
     var newState = (state as dynamic).copyWith(
         error: (state as dynamic).error.copyWith(reports: [
       const DefaultErrorReport(message: 'message'),

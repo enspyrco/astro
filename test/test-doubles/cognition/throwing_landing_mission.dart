@@ -4,7 +4,7 @@ import '../example_exception.dart';
 
 class ThrowingLandingMission<S extends CoreBeliefs> extends Conclusion<S> {
   @override
-  S update(S state) {
+  S conclude(S state) {
     throw ExampleException();
   }
 

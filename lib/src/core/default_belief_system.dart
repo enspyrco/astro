@@ -10,7 +10,7 @@ typedef BeliefSystemFactory = BeliefSystem<S> Function<S extends CoreBeliefs>(
     BeliefSystem<S>, Consideration<S>);
 
 /// Pass in [systemChecks] to run logic on every [Cognition], before or after
-/// [Consideration.process] and/or [Conclusion.update] are called.
+/// [Consideration.consider] and/or [Conclusion.conclude] are called.
 ///
 /// Make sure [onStateChangeController] is broadcast type as UI components will
 /// listen for a time at random intervals and only want the state changes while
@@ -18,7 +18,7 @@ typedef BeliefSystemFactory = BeliefSystem<S> Function<S extends CoreBeliefs>(
 ///
 /// The [errorHandlers] parameter takes an object of type [ErrorHandlers] which
 /// will be act on anything that gets thrown while executing
-/// [Conclusion.update] or [Consideration.process]. If no
+/// [Conclusion.conclude] or [Consideration.consider]. If no
 /// object is passed, the Throwable is just rethrown, keeping the same stack
 /// trace which is very useful in debugging.
 class DefaultBeliefSystem<S extends CoreBeliefs> implements BeliefSystem<S> {
@@ -44,8 +44,8 @@ class DefaultBeliefSystem<S extends CoreBeliefs> implements BeliefSystem<S> {
   final StreamController<S> _onStateChangeController =
       StreamController<S>.broadcast();
 
-  /// [Habit]s are called on every mission, before [Consideration.process]
-  /// is called and after [Conclusion.update] is called.
+  /// [Habit]s are called on every mission, before [Consideration.consider]
+  /// is called and after [Conclusion.conclude] is called.
   final Habits _systemChecks;
 
   /// Returns the current state tree of the application.
@@ -68,7 +68,7 @@ class DefaultBeliefSystem<S extends CoreBeliefs> implements BeliefSystem<S> {
     }
 
     try {
-      _state = mission.update(_state);
+      _state = mission.conclude(_state);
     } catch (thrown, trace) {
       if (_errorHandlers == null) rethrow;
       _errorHandlers!.handleLandingError(
@@ -101,9 +101,9 @@ class DefaultBeliefSystem<S extends CoreBeliefs> implements BeliefSystem<S> {
 
     try {
       if (_beliefSystemFactory != null) {
-        await mission.process(_beliefSystemFactory!(this, mission));
+        await mission.consider(_beliefSystemFactory!(this, mission));
       } else {
-        await mission.process(this);
+        await mission.consider(this);
       }
       for (final systemCheck in _systemChecks.postConsideration) {
         systemCheck(this, mission);

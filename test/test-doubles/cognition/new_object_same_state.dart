@@ -2,7 +2,7 @@ import 'package:abstractions/beliefs.dart';
 
 class NewObjectSameState<S extends CoreBeliefs> extends Conclusion<S> {
   @override
-  S update(S state) {
+  S conclude(S state) {
     return (state as dynamic).copyWith() as S;
   }
 
