@@ -13,7 +13,7 @@ void main() {
   test('DefaultBeliefSystem rethrows errors when landing missions', () {
     // Setup objects under test & test doubles
     var exampleBeliefs = ExampleBeliefs.initial;
-    var beliefSystem = DefaultBeliefSystem(state: exampleBeliefs);
+    var beliefSystem = DefaultBeliefSystem(beliefs: exampleBeliefs);
     var mission = ThrowingLandingMission<ExampleBeliefs>();
 
     // Check there are no error messages before we start
@@ -27,7 +27,7 @@ void main() {
   test('DefaultBeliefSystem rethrows errors when launching missions', () {
     // Setup objects under test & test doubles
     var exampleBeliefs = ExampleBeliefs.initial;
-    var beliefSystem = DefaultBeliefSystem(state: exampleBeliefs);
+    var beliefSystem = DefaultBeliefSystem(beliefs: exampleBeliefs);
     var consideration = ExampleConsideration<ExampleBeliefs>();
 
     // Check there are no error messages before we start
@@ -46,7 +46,7 @@ void main() {
   test('BeliefSystem emits onBeliefUpdate events only when state changes', () {
     // Setup objects under test & test doubles
     var appState = ExampleBeliefs.initial;
-    var beliefSystem = DefaultBeliefSystem(state: appState);
+    var beliefSystem = DefaultBeliefSystem(beliefs: appState);
 
     // Check there are no error messages before we start
     // expect(appState.error.reports, isEmpty);
@@ -57,14 +57,14 @@ void main() {
         emitsInOrder([
           ExampleBeliefs(
               error: const DefaultErrorCorrectionBeliefs(
-                  reports: [DefaultErrorReport(message: 'message')])),
+                  reports: [DefaultFeedback(message: 'message')])),
           ExampleBeliefs(
               error: const DefaultErrorCorrectionBeliefs(
-                  reports: [DefaultErrorReport(message: 'message')])),
+                  reports: [DefaultFeedback(message: 'message')])),
           ExampleBeliefs(
               error: const DefaultErrorCorrectionBeliefs(reports: [
-            DefaultErrorReport(message: 'message'),
-            DefaultErrorReport(message: 'message')
+            DefaultFeedback(message: 'message'),
+            DefaultFeedback(message: 'message')
           ]))
         ]));
 

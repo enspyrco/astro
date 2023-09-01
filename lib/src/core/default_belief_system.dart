@@ -9,7 +9,7 @@ import '../../percepts.dart';
 typedef BeliefSystemFactory = BeliefSystem<S> Function<S extends CoreBeliefs>(
     BeliefSystem<S>, Consideration<S>);
 
-/// Pass in [systemChecks] to run logic on every [Cognition], before or after
+/// Pass in [habits] to run logic on every [Cognition], before or after
 /// [Consideration.consider] and/or [Conclusion.conclude] are called.
 ///
 /// Make sure [onStateChangeController] is broadcast type as UI components will
@@ -23,16 +23,16 @@ typedef BeliefSystemFactory = BeliefSystem<S> Function<S extends CoreBeliefs>(
 /// trace which is very useful in debugging.
 class DefaultBeliefSystem<S extends CoreBeliefs> implements BeliefSystem<S> {
   DefaultBeliefSystem({
-    required S state,
+    required S beliefs,
     ErrorHandlers<S>? errorHandlers,
-    StreamController<S>? onStateChangeController,
-    Habits? systemChecks,
+    StreamController<S>? onBeliefUpdateController,
+    Habits? habits,
     BeliefSystemFactory? beliefSystemFactory,
-  })  : _state = state,
+  })  : _beliefs = beliefs,
         _errorHandlers = errorHandlers,
-        _systemChecks = systemChecks ?? DefaultHabits(),
+        _habits = habits ?? DefaultHabits(),
         _beliefSystemFactory = beliefSystemFactory;
-  S _state;
+  S _beliefs;
   final ErrorHandlers? _errorHandlers;
 
   /// This member is a constructor for creating special BeliefSystem objects,
@@ -41,52 +41,55 @@ class DefaultBeliefSystem<S extends CoreBeliefs> implements BeliefSystem<S> {
   /// mission) can be added by the special BeliefSystem
   final BeliefSystemFactory? _beliefSystemFactory;
 
-  final StreamController<S> _onStateChangeController =
+  final StreamController<S> _onBeliefUpdateController =
       StreamController<S>.broadcast();
 
-  /// [Habit]s are called on every mission, before [Consideration.consider]
-  /// is called and after [Conclusion.conclude] is called.
-  final Habits _systemChecks;
+  /// [Habit]s are called with every cognitive process, before [Consideration.consider]
+  /// is called and/or after [Conclusion.conclude] is called.
+  final Habits _habits;
 
   /// Returns the current state tree of the application.
   @override
-  S get beliefs => _state;
+  S get beliefs => _beliefs;
 
-  /// A stream of the app state changes - the design of astro intends that your
+  /// A stream of the belief updates - the design of perception intends that your
   /// app would not need to use this stream directly but we expose it for edge
   /// cases.
-  Stream<S> get stateChanges => _onStateChangeController.stream;
+  Stream<S> get beliefUpdates => _onBeliefUpdateController.stream;
 
-  /// Landing a [Conclusion] is the only way to upate the state held in
-  /// BeliefSystem, so any data, whether from UI events, network callbacks, or other
-  /// sources such as WebSockets needs to eventually be landed (ie. call land on
-  /// [Conclusion] that described the desired state change).
+  /// A [Conclusion] is the only way to upate the beliefs held in the
+  /// [BeliefSystem], so any data, whether from UI events, network callbacks, or
+  /// other sources such as WebSockets needs to eventually update the [BeliefSystem]
+  /// in order for a [StreamOfConsciousness] widget to infer a model that is passed
+  /// on to child widget and eventually drawn on screen.
+  /// Specifically, That means calling [BeliefSystem.conclude] with a [Conclusion]
+  /// that describes the desired belief updates.
   @override
-  void conclude(Conclusion<S> mission) {
-    for (final systemCheck in _systemChecks.preConclusion) {
-      systemCheck(this, mission);
+  void conclude(Conclusion<S> conclusion) {
+    for (final habit in _habits.preConclusion) {
+      habit(this, conclusion);
     }
 
     try {
-      _state = mission.conclude(_state);
+      _beliefs = conclusion.conclude(_beliefs);
     } catch (thrown, trace) {
       if (_errorHandlers == null) rethrow;
-      _errorHandlers!.handleLandingError(
+      _errorHandlers!.handleErrorDuringConclusion(
         thrown: thrown,
         trace: trace,
         reportSettings: (thrown is PerceptionException)
             ? thrown.reportSettings
-            : ErrorReportSettings.fullReport,
-        mission: mission,
+            : FeedbackSettings.detailedFeedback,
+        conclusion: conclusion,
         beliefSystem: this,
       );
     }
 
     // emit the new state for any listeners (eg. StateStreamBuilder widgets)
-    _onStateChangeController.add(_state);
+    _onBeliefUpdateController.add(_beliefs);
 
-    for (final systemCheck in _systemChecks.postConclusion) {
-      systemCheck(this, mission);
+    for (final systemCheck in _habits.postConclusion) {
+      systemCheck(this, conclusion);
     }
   }
 
@@ -94,37 +97,38 @@ class DefaultBeliefSystem<S extends CoreBeliefs> implements BeliefSystem<S> {
   /// an [Consideration]. If the desired end result is changing the app state,
   /// the [Consideration] should land a [Conclusion] when it is complete.
   @override
-  Future<void> consider(Consideration<S> mission) async {
-    for (final systemCheck in _systemChecks.preConsideration) {
-      systemCheck(this, mission);
+  Future<void> consider(Consideration<S> consideration) async {
+    for (final systemCheck in _habits.preConsideration) {
+      systemCheck(this, consideration);
     }
 
     try {
       if (_beliefSystemFactory != null) {
-        await mission.consider(_beliefSystemFactory!(this, mission));
+        await consideration
+            .consider(_beliefSystemFactory!(this, consideration));
       } else {
-        await mission.consider(this);
+        await consideration.consider(this);
       }
-      for (final systemCheck in _systemChecks.postConsideration) {
-        systemCheck(this, mission);
+      for (final systemCheck in _habits.postConsideration) {
+        systemCheck(this, consideration);
       }
     } catch (thrown, trace) {
       if (_errorHandlers == null) rethrow;
-      _errorHandlers!.handleLaunchError(
+      _errorHandlers!.handleExceptionDuringConsideration(
         thrown: thrown,
         trace: trace,
         reportSettings: (thrown is PerceptionException)
             ? thrown.reportSettings
-            : ErrorReportSettings.fullReport,
-        mission: mission,
+            : FeedbackSettings.detailedFeedback,
+        consideration: consideration,
         beliefSystem: this,
       );
 
       // emit the new state for any listeners (eg. StateStreamBuilder widgets)
-      _onStateChangeController.add(_state);
+      _onBeliefUpdateController.add(_beliefs);
     }
   }
 
   @override
-  Stream<S> get onBeliefUpdate => _onStateChangeController.stream;
+  Stream<S> get onBeliefUpdate => _onBeliefUpdateController.stream;
 }

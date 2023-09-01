@@ -22,7 +22,7 @@ class StreamOfConsciousness<S extends CoreBeliefs, VM> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _OnStateChangeBuilder<S, VM>(
+    return _StreamOfConsciousness<S, VM>(
       beliefSystem: locate<BeliefSystem<S>>(),
       builder: builder,
       transformer: infer,
@@ -32,14 +32,14 @@ class StreamOfConsciousness<S extends CoreBeliefs, VM> extends StatelessWidget {
   }
 }
 
-class _OnStateChangeBuilder<S extends CoreBeliefs, VM> extends StatefulWidget {
+class _StreamOfConsciousness<S extends CoreBeliefs, VM> extends StatefulWidget {
   final BeliefSystem<S> beliefSystem;
   final Widget Function(BuildContext, VM) builder;
   final VM Function(S) transformer;
   final void Function(BeliefSystem<S>)? onInit;
   final void Function(BeliefSystem<S>)? onDispose;
 
-  const _OnStateChangeBuilder({
+  const _StreamOfConsciousness({
     Key? key,
     required this.beliefSystem,
     required this.transformer,
@@ -50,12 +50,12 @@ class _OnStateChangeBuilder<S extends CoreBeliefs, VM> extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _OnStateChangeBuilderState<S, VM>();
+    return _StreamOfConsciousnessState<S, VM>();
   }
 }
 
-class _OnStateChangeBuilderState<S extends CoreBeliefs, VM>
-    extends State<_OnStateChangeBuilder<S, VM>> {
+class _StreamOfConsciousnessState<S extends CoreBeliefs, VM>
+    extends State<_StreamOfConsciousness<S, VM>> {
   late Stream<VM> _stream;
   VM? _previous;
   Object? _latestError;
@@ -82,7 +82,7 @@ class _OnStateChangeBuilderState<S extends CoreBeliefs, VM>
   }
 
   @override
-  void didUpdateWidget(_OnStateChangeBuilder<S, VM> oldWidget) {
+  void didUpdateWidget(_StreamOfConsciousness<S, VM> oldWidget) {
     _computeLatestValue();
 
     if (widget.beliefSystem != oldWidget.beliefSystem) {

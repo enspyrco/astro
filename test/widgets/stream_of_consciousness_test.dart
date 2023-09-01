@@ -2,7 +2,7 @@ import 'package:percepts/percepts.dart';
 import 'package:locator_for_perception/locator_for_perception.dart';
 import 'package:abstractions/beliefs.dart';
 import 'package:abstractions/error_correction.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Feedback;
 import 'package:flutter_test/flutter_test.dart';
 
 import '../test-doubles/example_beliefs.dart';
@@ -11,17 +11,17 @@ import '../test-doubles/cognition/add_error_report.dart';
 import '../test-doubles/cognition/new_object_same_state.dart';
 
 void main() {
-  testWidgets('OnStateChangeBuilder only builds when state changes',
+  testWidgets('StreamOfConsciousness only builds on belief updates',
       (tester) async {
     // Setup objects under test & test doubles
     var appState = ExampleBeliefs.initial;
-    var beliefSystem = DefaultBeliefSystem(state: appState);
+    var beliefSystem = DefaultBeliefSystem(beliefs: appState);
 
     Locator.add<BeliefSystem<ExampleBeliefs>>(beliefSystem);
 
     int i = 0;
     final widget = MaterialApp(
-        home: StreamOfConsciousness<ExampleBeliefs, List<ErrorReport>>(
+        home: StreamOfConsciousness<ExampleBeliefs, List<Feedback>>(
             infer: (state) => state.error.reports,
             builder: (context, vm) {
               return Text('builds: ${i++}, reports: ${vm.length}');
@@ -48,18 +48,17 @@ void main() {
   });
 
   testWidgets(
-      'OnStateChangeBuilder only builds when state changes (with identity equivalence)',
+      'StreamOfConsciousness only builds on belief updates (with identity equivalence)',
       (tester) async {
     // Setup objects under test & test doubles
     var appState = IdentityEquivalenceBeliefs.initial;
-    var beliefSystem = DefaultBeliefSystem(state: appState);
+    var beliefSystem = DefaultBeliefSystem(beliefs: appState);
 
     Locator.add<BeliefSystem<IdentityEquivalenceBeliefs>>(beliefSystem);
 
     int i = 0;
     final widget = MaterialApp(
-        home: StreamOfConsciousness<IdentityEquivalenceBeliefs,
-                List<ErrorReport>>(
+        home: StreamOfConsciousness<IdentityEquivalenceBeliefs, List<Feedback>>(
             infer: (state) => state.error.reports,
             builder: (context, vm) {
               return Text('builds: ${i++}, reports: ${vm.length}');

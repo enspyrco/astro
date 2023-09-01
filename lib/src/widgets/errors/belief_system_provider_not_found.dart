@@ -10,7 +10,7 @@ class BeliefSystemProviderNotFound<S extends CoreBeliefs> extends Error {
   * Move the BeliefSystemProvider<$S> higher in the widget tree, above
     where it is first used (eg. by a context.launch call)
   * Provide full type information to BeliefSystem<$S>, BeliefSystemProvider<$S>
-    and OnStateChangeBuilder<$S, VM>
+    and StreamOfConsciousness<$S, VM>
   * Move the BeliefSystemProvider<$S> above MaterialApp if the Navigator
     may be changing the widget tree, taking out the BeliefSystemProvider<$S>
 ''';

@@ -3,12 +3,12 @@
 /// This is a good test but as it's currently setup we need plugins to setup
 /// an app then check if the result matches expectations
 /// 
-/// TODO: Try to do this test in astro without the plugins and if it's not 
-/// possible consider making a new package that depdends on astro and plugins
-/// whose purpose is to test the core astro functionality 
+/// TODO: Try to do this test in percepts without the plugins and if it's not 
+/// possible consider making a new package that depends on percepts and plugins
+/// whose purpose is to test the core percepts functionality
 
 // void main() {
-//   testWidgets('OnStateChangeBuilder only builds when state changes',
+//   testWidgets('StreamOfConsciousness only builds when state changes',
 //       (tester) async {
 //     // Setup objects under test & test doubles
 //     var appState = ExampleAppState.initial;
@@ -18,7 +18,7 @@
 
 //     int i = 0;
 //     final widget = MaterialApp(
-//         home: OnStateChangeBuilder<ExampleAppState, SignedInState>(
+//         home: StreamOfConsciousness<ExampleAppState, SignedInState>(
 //             transformer: (state) {
 //       var signedIn = (state as dynamic).auth.user.signedIn as SignedInState;
 //       return signedIn;

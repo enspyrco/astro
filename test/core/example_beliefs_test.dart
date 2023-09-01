@@ -8,10 +8,10 @@ void main() {
   test('CoreBeliefs objects with the same state are equal', () {
     var a = ExampleBeliefs(
         error: const DefaultErrorCorrectionBeliefs(
-            reports: [DefaultErrorReport(message: 'message')]));
+            reports: [DefaultFeedback(message: 'message')]));
     var b = ExampleBeliefs(
         error: const DefaultErrorCorrectionBeliefs(
-            reports: [DefaultErrorReport(message: 'message')]));
+            reports: [DefaultFeedback(message: 'message')]));
 
     expect(a == b, true);
   });
@@ -20,7 +20,7 @@ void main() {
     // When app state uses identity equivalence, cloned objects are not equal
     var c = IdentityEquivalenceBeliefs(
         error: const DefaultErrorCorrectionBeliefs(
-            reports: [DefaultErrorReport(message: 'message')]));
+            reports: [DefaultFeedback(message: 'message')]));
     var d = c.copyWith();
 
     expect(c == d, false);
@@ -28,7 +28,7 @@ void main() {
     // When a CoreBeliefs object uses state-based equivalence, cloned objects are equal
     var a = ExampleBeliefs(
         error: const DefaultErrorCorrectionBeliefs(
-            reports: [DefaultErrorReport(message: 'message')]));
+            reports: [DefaultFeedback(message: 'message')]));
     var b = a.copyWith();
 
     expect(a == b, true);
