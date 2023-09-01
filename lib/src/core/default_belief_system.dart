@@ -50,7 +50,7 @@ class DefaultBeliefSystem<S extends CoreBeliefs> implements BeliefSystem<S> {
 
   /// Returns the current state tree of the application.
   @override
-  S get state => _state;
+  S get beliefs => _state;
 
   /// A stream of the app state changes - the design of astro intends that your
   /// app would not need to use this stream directly but we expose it for edge

@@ -95,7 +95,7 @@ class _OnStateChangeBuilderState<S extends CoreBeliefs, VM>
   void _computeLatestValue() {
     try {
       _latestError = null;
-      _previous = widget.transformer(widget.beliefSystem.state);
+      _previous = widget.transformer(widget.beliefSystem.beliefs);
     } catch (e, s) {
       _previous = null;
       _latestError = TransformFailureException(e, s);
@@ -104,7 +104,7 @@ class _OnStateChangeBuilderState<S extends CoreBeliefs, VM>
 
   void _createStream() {
     _stream = widget.beliefSystem.onBeliefUpdate
-        .map((_) => widget.transformer(widget.beliefSystem.state))
+        .map((_) => widget.transformer(widget.beliefSystem.beliefs))
         .transform(StreamTransformer.fromHandlers(
             handleError: _handleTransformFailure))
         .where((vm) => vm != _previous)
