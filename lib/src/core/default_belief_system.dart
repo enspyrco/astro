@@ -38,7 +38,7 @@ class DefaultBeliefSystem<S extends CoreBeliefs> implements BeliefSystem<S> {
   /// This member is a constructor for creating special BeliefSystem objects,
   /// allowing for different behaviour under different circumstances - eg.
   /// when the Inspector is being used, extra information (such as the parent
-  /// mission) can be added by the special BeliefSystem
+  /// cognition) can be added by the special BeliefSystem
   final BeliefSystemFactory? _beliefSystemFactory;
 
   final StreamController<S> _onBeliefUpdateController =
