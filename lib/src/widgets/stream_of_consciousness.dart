@@ -4,7 +4,7 @@ import 'package:locator_for_perception/locator_for_perception.dart';
 import 'package:flutter/widgets.dart';
 import 'package:abstractions/beliefs.dart';
 
-import 'exceptions/transform_failure_exception.dart';
+import 'errors/infer_function_failure.dart';
 
 class StreamOfConsciousness<S extends CoreBeliefs, VM> extends StatelessWidget {
   final VM Function(S beliefs) infer;
@@ -25,7 +25,7 @@ class StreamOfConsciousness<S extends CoreBeliefs, VM> extends StatelessWidget {
     return _StreamOfConsciousness<S, VM>(
       beliefSystem: locate<BeliefSystem<S>>(),
       builder: builder,
-      transformer: infer,
+      inferer: infer,
       onInit: onInit,
       onDispose: onDispose,
     );
@@ -35,14 +35,14 @@ class StreamOfConsciousness<S extends CoreBeliefs, VM> extends StatelessWidget {
 class _StreamOfConsciousness<S extends CoreBeliefs, VM> extends StatefulWidget {
   final BeliefSystem<S> beliefSystem;
   final Widget Function(BuildContext, VM) builder;
-  final VM Function(S) transformer;
+  final VM Function(S) inferer;
   final void Function(BeliefSystem<S>)? onInit;
   final void Function(BeliefSystem<S>)? onDispose;
 
   const _StreamOfConsciousness({
     Key? key,
     required this.beliefSystem,
-    required this.transformer,
+    required this.inferer,
     required this.builder,
     this.onInit,
     this.onDispose,
@@ -95,16 +95,16 @@ class _StreamOfConsciousnessState<S extends CoreBeliefs, VM>
   void _computeLatestValue() {
     try {
       _latestError = null;
-      _previous = widget.transformer(widget.beliefSystem.beliefs);
+      _previous = widget.inferer(widget.beliefSystem.beliefs);
     } catch (e, s) {
       _previous = null;
-      _latestError = TransformFailureException(e, s);
+      _latestError = InferFunctionFailure(e, s);
     }
   }
 
   void _createStream() {
     _stream = widget.beliefSystem.onBeliefUpdate
-        .map((_) => widget.transformer(widget.beliefSystem.beliefs))
+        .map((_) => widget.inferer(widget.beliefSystem.beliefs))
         .transform(StreamTransformer.fromHandlers(
             handleError: _handleTransformFailure))
         .where((vm) => vm != _previous)
@@ -117,7 +117,7 @@ class _StreamOfConsciousnessState<S extends CoreBeliefs, VM>
     StackTrace stackTrace,
     EventSink<VM> sink,
   ) {
-    sink.addError(TransformFailureException(error, stackTrace), stackTrace);
+    sink.addError(InferFunctionFailure(error, stackTrace), stackTrace);
   }
 
   // After each VM is emitted from the Stream, we update the
@@ -129,7 +129,7 @@ class _StreamOfConsciousnessState<S extends CoreBeliefs, VM>
     sink.add(vm);
   }
 
-  // Handle any errors from transformer/onWillChange/onDidChange
+  // Handle any errors from inferer/onWillChange/onDidChange
   void _handleError(
     Object error,
     StackTrace stackTrace,
