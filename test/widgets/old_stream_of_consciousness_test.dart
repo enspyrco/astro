@@ -20,7 +20,7 @@
 //     final widget = MaterialApp(
 //         home: StreamOfConsciousness<ExampleAppState, SignedInState>(
 //             transformer: (state) {
-//       var signedIn = (state as dynamic).auth.user.signedIn as SignedInState;
+//       var signedIn = (state as dynamic).identity.userAuthState.signedIn as SignedInState;
 //       return signedIn;
 //     }, builder: (context, signedInState) {
 //       var output = 'builds: ${i++}, $signedInState';

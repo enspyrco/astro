@@ -88,8 +88,8 @@ class DefaultBeliefSystem<S extends CoreBeliefs> implements BeliefSystem<S> {
     // emit the new state for any listeners (eg. StreamOfConsciousness widgets)
     _onBeliefUpdateController.add(_beliefs);
 
-    for (final systemCheck in _habits.postConclusion) {
-      systemCheck(this, conclusion);
+    for (final habit in _habits.postConclusion) {
+      habit(this, conclusion);
     }
   }
 
