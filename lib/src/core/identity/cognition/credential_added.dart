@@ -1,8 +1,8 @@
 import 'package:abstractions/beliefs.dart';
 import 'package:abstractions/identity.dart';
 
-class IdentityUpdated<T extends CoreBeliefs> extends Conclusion<T> {
-  const IdentityUpdated({String? newAppleCredential})
+class CredentialAdded<T extends CoreBeliefs> extends Conclusion<T> {
+  const CredentialAdded({String? newAppleCredential})
       : _newAppleCredential = newAppleCredential;
 
   final String? _newAppleCredential;
