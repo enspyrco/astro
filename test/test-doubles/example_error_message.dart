@@ -1,8 +1,8 @@
-import 'package:types_for_perception/json_types.dart';
-import 'package:types_for_perception/state_types.dart';
+import 'package:json_utils/json_utils.dart';
+import 'package:abstractions/beliefs.dart';
 
 /// Class for carrying basic error information for display to the user.
-class ExampleErrorMessage implements AstroState {
+class ExampleErrorMessage implements CoreBeliefs {
   ExampleErrorMessage({required this.message, this.trace});
 
   final String message;

@@ -1,21 +1,20 @@
 import 'dart:async';
 
 import 'package:locator_for_perception/locator_for_perception.dart';
-import 'package:types_for_perception/core_types.dart';
-import 'package:types_for_perception/state_types.dart';
 import 'package:flutter/widgets.dart';
+import 'package:abstractions/beliefs.dart';
 
-import 'exceptions/transform_failure_exception.dart';
+import 'errors/infer_function_failure.dart';
 
-class OnStateChangeBuilder<S extends AstroState, VM> extends StatelessWidget {
-  final VM Function(S state) transformer;
+class StreamOfConsciousness<S extends CoreBeliefs, VM> extends StatelessWidget {
+  final VM Function(S beliefs) infer;
   final Widget Function(BuildContext context, VM vm) builder;
-  final void Function(MissionControl<S> missionControl)? onInit;
-  final void Function(MissionControl<S> missionControl)? onDispose;
+  final void Function(BeliefSystem<S> beliefSystem)? onInit;
+  final void Function(BeliefSystem<S> beliefSystem)? onDispose;
 
-  const OnStateChangeBuilder({
+  const StreamOfConsciousness({
     Key? key,
-    required this.transformer,
+    required this.infer,
     required this.builder,
     this.onInit,
     this.onDispose,
@@ -23,27 +22,27 @@ class OnStateChangeBuilder<S extends AstroState, VM> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _OnStateChangeBuilder<S, VM>(
-      missionControl: locate<MissionControl<S>>(),
+    return _StreamOfConsciousness<S, VM>(
+      beliefSystem: locate<BeliefSystem<S>>(),
       builder: builder,
-      transformer: transformer,
+      inferer: infer,
       onInit: onInit,
       onDispose: onDispose,
     );
   }
 }
 
-class _OnStateChangeBuilder<S extends AstroState, VM> extends StatefulWidget {
-  final MissionControl<S> missionControl;
+class _StreamOfConsciousness<S extends CoreBeliefs, VM> extends StatefulWidget {
+  final BeliefSystem<S> beliefSystem;
   final Widget Function(BuildContext, VM) builder;
-  final VM Function(S) transformer;
-  final void Function(MissionControl<S>)? onInit;
-  final void Function(MissionControl<S>)? onDispose;
+  final VM Function(S) inferer;
+  final void Function(BeliefSystem<S>)? onInit;
+  final void Function(BeliefSystem<S>)? onDispose;
 
-  const _OnStateChangeBuilder({
+  const _StreamOfConsciousness({
     Key? key,
-    required this.missionControl,
-    required this.transformer,
+    required this.beliefSystem,
+    required this.inferer,
     required this.builder,
     this.onInit,
     this.onDispose,
@@ -51,12 +50,12 @@ class _OnStateChangeBuilder<S extends AstroState, VM> extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _OnStateChangeBuilderState<S, VM>();
+    return _StreamOfConsciousnessState<S, VM>();
   }
 }
 
-class _OnStateChangeBuilderState<S extends AstroState, VM>
-    extends State<_OnStateChangeBuilder<S, VM>> {
+class _StreamOfConsciousnessState<S extends CoreBeliefs, VM>
+    extends State<_StreamOfConsciousness<S, VM>> {
   late Stream<VM> _stream;
   VM? _previous;
   Object? _latestError;
@@ -70,7 +69,7 @@ class _OnStateChangeBuilderState<S extends AstroState, VM>
   void initState() {
     super.initState();
 
-    widget.onInit?.call(widget.missionControl);
+    widget.onInit?.call(widget.beliefSystem);
 
     _computeLatestValue();
     _createStream();
@@ -78,15 +77,15 @@ class _OnStateChangeBuilderState<S extends AstroState, VM>
 
   @override
   void dispose() {
-    widget.onDispose?.call(widget.missionControl);
+    widget.onDispose?.call(widget.beliefSystem);
     super.dispose();
   }
 
   @override
-  void didUpdateWidget(_OnStateChangeBuilder<S, VM> oldWidget) {
+  void didUpdateWidget(_StreamOfConsciousness<S, VM> oldWidget) {
     _computeLatestValue();
 
-    if (widget.missionControl != oldWidget.missionControl) {
+    if (widget.beliefSystem != oldWidget.beliefSystem) {
       _createStream();
     }
 
@@ -96,16 +95,16 @@ class _OnStateChangeBuilderState<S extends AstroState, VM>
   void _computeLatestValue() {
     try {
       _latestError = null;
-      _previous = widget.transformer(widget.missionControl.state);
+      _previous = widget.inferer(widget.beliefSystem.beliefs);
     } catch (e, s) {
       _previous = null;
-      _latestError = TransformFailureException(e, s);
+      _latestError = InferFunctionFailure(e, s);
     }
   }
 
   void _createStream() {
-    _stream = widget.missionControl.onStateChange
-        .map((_) => widget.transformer(widget.missionControl.state))
+    _stream = widget.beliefSystem.onBeliefUpdate
+        .map((_) => widget.inferer(widget.beliefSystem.beliefs))
         .transform(StreamTransformer.fromHandlers(
             handleError: _handleTransformFailure))
         .where((vm) => vm != _previous)
@@ -118,7 +117,7 @@ class _OnStateChangeBuilderState<S extends AstroState, VM>
     StackTrace stackTrace,
     EventSink<VM> sink,
   ) {
-    sink.addError(TransformFailureException(error, stackTrace), stackTrace);
+    sink.addError(InferFunctionFailure(error, stackTrace), stackTrace);
   }
 
   // After each VM is emitted from the Stream, we update the
@@ -130,7 +129,7 @@ class _OnStateChangeBuilderState<S extends AstroState, VM>
     sink.add(vm);
   }
 
-  // Handle any errors from transformer/onWillChange/onDidChange
+  // Handle any errors from inferer/onWillChange/onDidChange
   void _handleError(
     Object error,
     StackTrace stackTrace,

@@ -1,10 +1,10 @@
-name: core_of_perception
+name: percepts
 description: The core API for perception principles and peripherals.
 version: 0.0.0-a1
 publish_to: none
 
 environment:
-  sdk: ">=3.0.1 <4.0.0"
+  sdk: ">=3.0.0 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
@@ -13,11 +13,20 @@ dependencies:
   
   meta: ^1.9.1
   
-  error_handling_for_perception: ^0.0.0-a1
-  locator_for_perception: ^0.0.0-a1
-  types_for_perception: ^0.0.0-a1
+  abstractions:
+    git: https://github.com/enspyrco/abstractions
+  locator_for_perception:
+    git: https://github.com/enspyrco/locator_for_perception
+  error_correction_in_perception:
+    git: https://github.com/enspyrco/error_correction_in_perception
+
+  types_for_auth:
+    git: https://github.com/enspyrco/types_for_auth
+  json_utils:
+    git: https://github.com/enspyrco/json_utils
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  enspyr_lints: ^0.0.0-a1
+  enspyr_lints:
+    git: https://github.com/enspyrco/enspyr_lints
