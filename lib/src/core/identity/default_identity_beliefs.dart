@@ -8,9 +8,11 @@ class DefaultIdentityBeliefs implements IdentityBeliefs, CoreBeliefs {
   const DefaultIdentityBeliefs(
       {required this.credentials, required this.userAuthState});
 
-  static DefaultIdentityBeliefs get initial => const DefaultIdentityBeliefs(
-        credentials: {},
-        userAuthState: DefaultUserAuthState(),
+  static DefaultIdentityBeliefs get initial => DefaultIdentityBeliefs(
+        // We need a non const map that can have values added later, so
+        // ignore: prefer_collection_literals
+        credentials: Map<IdentityProvider, String>(),
+        userAuthState: const DefaultUserAuthState(),
       );
 
   @override
