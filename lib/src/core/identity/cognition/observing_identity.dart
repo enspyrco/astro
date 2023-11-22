@@ -7,8 +7,9 @@ import 'package:locator_for_perception/locator_for_perception.dart';
 import 'package:types_for_auth/types_for_auth.dart';
 import 'package:abstractions/beliefs.dart';
 
+import '../default_user_auth_state.dart';
 import '../utils/on_provider_auth_state_change.dart';
-import 'user_auth_state_replaced.dart';
+import 'identity_updated.dart';
 
 StreamSubscription<UserAuthState>? _subscription;
 
@@ -24,7 +25,15 @@ class ObservingIdentity<T extends CoreBeliefs, S extends IdentitySubsystem>
 
     _subscription = service.onAuthStateChange.listen(
       (UserAuthState user) {
-        beliefSystem.conclude(UserAuthStateReplaced<T>(user));
+        /// Currently [IdentityUpdated] takes a [DefaultUserAuthState] so we
+        /// create one.
+        final defaultUserAuthState = DefaultUserAuthState(
+            uid: user.uid,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            signedIn: user.signedIn);
+        beliefSystem
+            .conclude(IdentityUpdated<T>(userAuthState: defaultUserAuthState));
 
         /// Start any cognitions that were added to [OnAuthStateChange].
         final onProviderAuthStateChange =
