@@ -24,9 +24,11 @@ class CredentialAdded<T extends CoreBeliefs> extends Conclusion<T> {
 
   @override
   toJson() => {
-        'name_': 'IdentityUpdated',
-        'state_': {
-          'newAppleCredential': _newAppleCredential,
-        }
+        'name_': 'CredentialAdded',
+        'state_': (_newAppleCredential != null)
+            ? {
+                'newAppleCredential': _newAppleCredential,
+              }
+            : {},
       };
 }

@@ -1,8 +1,8 @@
 import 'package:types_for_auth/types_for_auth.dart';
 import 'package:abstractions/beliefs.dart';
 
-class UserAuthStateUpdated<T extends CoreBeliefs> extends Conclusion<T> {
-  const UserAuthStateUpdated(this.userAuthState);
+class UserAuthStateReplaced<T extends CoreBeliefs> extends Conclusion<T> {
+  const UserAuthStateReplaced(this.userAuthState);
 
   final UserAuthState userAuthState;
 
