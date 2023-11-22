@@ -1,8 +1,8 @@
 import 'package:abstractions/beliefs.dart';
 import 'package:abstractions/identity.dart';
 
-import '../default_identity_beliefs.dart';
-import '../default_user_auth_state.dart';
+import '../../default_identity_beliefs.dart';
+import '../../default_user_auth_state.dart';
 
 class IdentityUpdated<T extends CoreBeliefs> extends Conclusion<T> {
   const IdentityUpdated(

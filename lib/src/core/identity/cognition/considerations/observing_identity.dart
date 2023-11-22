@@ -7,9 +7,9 @@ import 'package:locator_for_perception/locator_for_perception.dart';
 import 'package:types_for_auth/types_for_auth.dart';
 import 'package:abstractions/beliefs.dart';
 
-import '../default_user_auth_state.dart';
-import '../utils/on_provider_auth_state_change.dart';
-import 'identity_updated.dart';
+import '../../default_user_auth_state.dart';
+import '../../utils/on_provider_auth_state_change.dart';
+import '../conclusions/identity_updated.dart';
 
 StreamSubscription<UserAuthState>? _subscription;
 
