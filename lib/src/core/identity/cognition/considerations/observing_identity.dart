@@ -26,7 +26,7 @@ class ObservingIdentity<T extends CoreBeliefs, S extends IdentitySubsystem>
     _subscription = service.onAuthStateChange.listen(
       (UserAuthState user) {
         /// Currently [IdentityUpdated] takes a [DefaultUserAuthState] so we
-        /// create one.
+        /// create one from the [UserAuthState] object
         final defaultUserAuthState = DefaultUserAuthState(
             uid: user.uid,
             displayName: user.displayName,

@@ -2,18 +2,19 @@ import 'package:abstractions/beliefs.dart';
 import 'package:abstractions/identity.dart';
 
 class CredentialAdded<T extends CoreBeliefs> extends Conclusion<T> {
-  const CredentialAdded({String? newAppleCredential})
-      : _newAppleCredential = newAppleCredential;
+  const CredentialAdded({
+    required this.newAppleCredential,
+  });
 
-  final String? _newAppleCredential;
+  final String? newAppleCredential;
 
   @override
   T conclude(T beliefs) {
     final credentials = (beliefs as dynamic).identity.credentials
         as Map<IdentityProvider, String>;
 
-    if (_newAppleCredential != null) {
-      credentials[IdentityProvider.apple] = _newAppleCredential!;
+    if (newAppleCredential != null) {
+      credentials[IdentityProvider.apple] = newAppleCredential!;
     }
 
     return (beliefs as dynamic).copyWith(
@@ -25,9 +26,9 @@ class CredentialAdded<T extends CoreBeliefs> extends Conclusion<T> {
   @override
   toJson() => {
         'name_': 'CredentialAdded',
-        'state_': (_newAppleCredential != null)
+        'state_': (newAppleCredential != null)
             ? {
-                'newAppleCredential': _newAppleCredential,
+                'newAppleCredential': newAppleCredential,
               }
             : {},
       };
