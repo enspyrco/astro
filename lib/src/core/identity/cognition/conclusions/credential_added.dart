@@ -3,10 +3,12 @@ import 'package:abstractions/identity.dart';
 
 class CredentialAdded<T extends CoreBeliefs> extends Conclusion<T> {
   const CredentialAdded({
-    required this.newAppleCredential,
+    this.newAppleCredential,
+    this.nonce,
   });
 
   final String? newAppleCredential;
+  final String? nonce;
 
   @override
   T conclude(T beliefs) {
