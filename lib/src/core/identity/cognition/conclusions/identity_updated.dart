@@ -16,13 +16,17 @@ class IdentityUpdated<T extends CoreBeliefs> extends Conclusion<T> {
 
   @override
   T conclude(T beliefs) {
+    // Create new identity components
+    final Map<IdentityProvider, String> newCredentials =
+        _credentials ?? (beliefs as IdentityConcept).identity.credentials;
+    final DefaultUserAuthState newAuthState = _userAuthState ??
+        (beliefs as IdentityConcept).identity.userAuthState
+            as DefaultUserAuthState;
+
+    // Create new identity
     final IdentityBeliefs newIdentity = DefaultIdentityBeliefs(
-        credentials: _credentials ??
-            (beliefs as dynamic).identity.credentials
-                as Map<IdentityProvider, String>,
-        userAuthState: _userAuthState ??
-            (beliefs as dynamic).identity.userAuthState
-                as DefaultUserAuthState);
+        credentials: newCredentials, userAuthState: newAuthState);
+
     return (beliefs as dynamic).copyWith(identity: newIdentity) as T;
   }
 
